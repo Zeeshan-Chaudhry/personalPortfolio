@@ -1,0 +1,756 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Segoe UI", "Trebuchet MS", "Arial", sans-serif;
+  background: #03040b;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.duel-stage {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 18%, rgba(29, 78, 216, 0.08), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(127, 29, 29, 0.16), transparent 40%),
+    linear-gradient(180deg, #05060f 0%, #070a15 42%, #04050b 100%);
+}
+
+.duel-bg-night,
+.duel-bg-vortex,
+.duel-bg-rays,
+.duel-bg-storm,
+.duel-bg-fog,
+.duel-bg-grid,
+.duel-bg-runes,
+.duel-bg-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.duel-bg-night {
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(12, 23, 54, 0.75), transparent 55%),
+    radial-gradient(ellipse at 84% 8%, rgba(63, 14, 43, 0.5), transparent 54%),
+    radial-gradient(ellipse at 50% 95%, rgba(5, 11, 24, 0.95), transparent 60%),
+    linear-gradient(180deg, #02030a 0%, #040812 48%, #020208 100%);
+}
+
+.duel-bg-night::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(191, 219, 254, 0.46) 1px, transparent 1px);
+  background-size: 220px 220px;
+  opacity: 0.1;
+  animation: twinkle 8s ease-in-out infinite alternate;
+}
+
+.duel-bg-vortex {
+  background:
+    radial-gradient(circle at 50% 52%, rgba(56, 189, 248, 0.14), transparent 34%),
+    radial-gradient(circle at 50% 52%, rgba(147, 51, 234, 0.13), transparent 48%),
+    radial-gradient(circle at 50% 52%, rgba(250, 204, 21, 0.08), transparent 62%);
+  filter: blur(2px);
+  animation: vortexPulse 7s ease-in-out infinite;
+}
+
+.duel-bg-rays {
+  background:
+    linear-gradient(112deg, transparent 0%, rgba(125, 211, 252, 0.06) 42%, transparent 60%),
+    linear-gradient(72deg, transparent 0%, rgba(250, 204, 21, 0.05) 45%, transparent 64%),
+    linear-gradient(138deg, transparent 0%, rgba(168, 85, 247, 0.05) 40%, transparent 58%);
+  opacity: 0.45;
+  animation: rayShift 10s ease-in-out infinite;
+}
+
+.duel-bg-storm {
+  opacity: 0.26;
+  background: linear-gradient(120deg, transparent 0%, rgba(99, 102, 241, 0.07) 43%, transparent 45%),
+    linear-gradient(300deg, transparent 0%, rgba(56, 189, 248, 0.05) 47%, transparent 50%);
+  animation: stormPulse 9s ease-in-out infinite;
+}
+
+.duel-bg-fog {
+  background:
+    radial-gradient(ellipse at 50% 86%, rgba(148, 163, 184, 0.11), transparent 62%),
+    radial-gradient(ellipse at 34% 78%, rgba(79, 70, 229, 0.14), transparent 54%),
+    radial-gradient(ellipse at 68% 76%, rgba(127, 29, 29, 0.12), transparent 52%);
+  filter: blur(14px);
+  animation: fogDrift 16s ease-in-out infinite alternate;
+}
+
+.duel-bg-grid {
+  top: auto;
+  height: 46%;
+  background-image:
+    linear-gradient(to right, rgba(56, 189, 248, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.26) 1px, transparent 1px);
+  background-size: 72px 72px;
+  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.2));
+  mask-image: linear-gradient(180deg, transparent 0%, black 28%, black 100%);
+  transform: perspective(560px) rotateX(62deg) translateY(26px);
+  transform-origin: bottom;
+  animation: gridPulse 7s ease-in-out infinite;
+}
+
+.duel-bg-grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(250, 204, 21, 0.18) 50%, transparent 70%);
+  opacity: 0.22;
+  transform: translateX(-70%);
+  animation: gridShimmer 9s linear infinite;
+}
+
+.duel-bg-runes {
+  background:
+    radial-gradient(circle at 18% 76%, rgba(250, 204, 21, 0.12) 0, rgba(250, 204, 21, 0.03) 70px, transparent 160px),
+    radial-gradient(circle at 84% 72%, rgba(168, 85, 247, 0.12) 0, rgba(168, 85, 247, 0.03) 75px, transparent 160px);
+}
+
+.duel-bg-runes::before,
+.duel-bg-runes::after {
+  content: "𓂀 𓊹 𓃭";
+  position: absolute;
+  font-size: 1.2rem;
+  letter-spacing: 0.8rem;
+  color: rgba(250, 204, 21, 0.24);
+  text-shadow: 0 0 12px rgba(250, 204, 21, 0.26), 0 0 20px rgba(56, 189, 248, 0.16);
+  animation: runeFade 8s ease-in-out infinite;
+}
+
+.duel-bg-runes::before {
+  left: 10%;
+  top: 18%;
+}
+
+.duel-bg-runes::after {
+  right: 12%;
+  bottom: 25%;
+  animation-delay: 3s;
+}
+
+.duel-bg-particles {
+  background-image:
+    radial-gradient(circle, rgba(147, 197, 253, 0.6) 1px, transparent 1px),
+    radial-gradient(circle, rgba(250, 204, 21, 0.38) 1px, transparent 1px),
+    radial-gradient(circle, rgba(167, 139, 250, 0.36) 1px, transparent 1px),
+    radial-gradient(circle, rgba(248, 250, 252, 0.32) 1px, transparent 1px);
+  background-size: 220px 220px, 310px 310px, 270px 270px, 360px 360px;
+  background-position: 0 0, 50px 90px, 120px 30px, 160px 140px;
+  opacity: 0.38;
+  animation: particleDrift 18s linear infinite;
+}
+
+.closed-body,
+.duel-top,
+.duel-bottom {
+  border: 1px solid rgba(71, 85, 105, 0.6);
+  background: linear-gradient(160deg, rgba(9, 10, 16, 0.95), rgba(12, 14, 22, 0.95));
+  box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.15), inset 0 0 0 2px rgba(250, 204, 21, 0.08),
+    inset 0 0 24px rgba(56, 189, 248, 0.08), 0 28px 56px rgba(0, 0, 0, 0.62);
+}
+
+.closed-body {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1rem 1rem 1rem 13rem;
+}
+
+.duel-bottom-disc {
+  position: absolute;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  background: radial-gradient(circle at 30% 30%, #1b2230, #03050a 72%);
+  box-shadow: inset 0 0 20px rgba(30, 58, 138, 0.35);
+}
+
+.duel-floating-card {
+  position: absolute;
+  left: 1.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 170px;
+  height: 240px;
+  perspective: 1200px;
+  animation: cardFloat 4.8s ease-in-out infinite;
+}
+
+.duel-floating-card-terminal {
+  top: 62%;
+  left: 1.1rem;
+  width: 160px;
+  height: 226px;
+}
+
+.duel-floating-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: cardIdleRotate 8s ease-in-out infinite;
+  transition: transform 0.55s ease;
+}
+
+.duel-floating-card:hover .duel-floating-card-inner {
+  transform: rotateY(180deg);
+}
+
+.duel-floating-card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(250, 204, 21, 0.45);
+  background: linear-gradient(160deg, rgba(10, 18, 36, 0.96), rgba(17, 8, 29, 0.94));
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.3), 0 0 26px rgba(56, 189, 248, 0.2);
+  padding: 0.8rem;
+  overflow: hidden;
+}
+
+.duel-floating-card-face::after {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background: linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.3) 50%, transparent 60%);
+  transform: translateX(-80%) rotate(7deg);
+  animation: holoSweep 3.6s linear infinite;
+}
+
+.duel-floating-card-back {
+  transform: rotateY(180deg);
+}
+
+.duel-card-meta {
+  margin: 0;
+  font-size: 0.56rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #7dd3fc;
+}
+
+.duel-card-title {
+  margin: 0.55rem 0 0;
+  font-family: "Orbitron", "Eurostile", "Segoe UI", sans-serif;
+  font-size: 1.06rem;
+  color: #fef3c7;
+  line-height: 1.25;
+}
+
+.duel-card-stat {
+  margin: 0.6rem 0 0;
+  font-size: 0.68rem;
+  color: #cbd5e1;
+}
+
+.duel-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(250, 204, 21, 0.35);
+}
+
+.closed-screen-wrap {
+  margin-left: auto;
+  width: min(100%, 640px);
+  border-radius: 0.8rem;
+  border: 1px solid rgba(71, 85, 105, 0.8);
+  background: linear-gradient(160deg, #0a0f1b, #060913);
+  padding: 0.55rem;
+}
+
+.closed-screen {
+  border-radius: 0.6rem;
+  border: 1px solid rgba(103, 232, 249, 0.22);
+  min-height: 260px;
+  background: linear-gradient(160deg, rgba(9, 18, 34, 0.96), rgba(14, 8, 27, 0.92));
+  box-shadow: inset 0 0 30px rgba(59, 130, 246, 0.18);
+  padding: 1rem;
+}
+
+.closed-screen-tap {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  background: none;
+  border-color: rgba(250, 204, 21, 0.26);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.closed-screen-tap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/yuhgi.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.closed-screen-tap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(251, 191, 36, 0.18), transparent 52%),
+    linear-gradient(180deg, rgba(3, 6, 16, 0.52), rgba(4, 6, 14, 0.82));
+  pointer-events: none;
+}
+
+.closed-screen-tap > * {
+  position: relative;
+  z-index: 1;
+}
+
+.closed-screen-tap:hover {
+  transform: translateY(-2px) scale(1.01);
+  border-color: rgba(250, 204, 21, 0.56);
+  box-shadow: inset 0 0 40px rgba(250, 204, 21, 0.16), 0 0 28px rgba(56, 189, 248, 0.18);
+}
+
+.closed-screen-tap:focus-visible {
+  outline: 2px solid rgba(125, 211, 252, 0.75);
+  outline-offset: 2px;
+}
+
+.tap-begin {
+  margin-bottom: 0;
+  text-align: center;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fde68a;
+  text-shadow: 0 0 16px rgba(250, 204, 21, 0.5), 0 0 10px rgba(56, 189, 248, 0.34);
+  animation: tapBlink 1.4s steps(1, end) infinite;
+}
+
+.duel-shell {
+  position: relative;
+}
+
+.duel-shell::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -44px;
+  height: 46px;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.28), transparent 70%);
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+.duel-hinge {
+  height: 10px;
+  width: 76%;
+  margin-inline: auto;
+  border-radius: 2px;
+  border: 1px solid rgba(100, 116, 139, 0.45);
+  background: linear-gradient(180deg, #141a29, #090d16);
+  box-shadow: inset 0 0 8px rgba(220, 38, 38, 0.24);
+}
+
+.duel-bottom-disc {
+  width: 190px;
+  height: 190px;
+  left: -62px;
+}
+
+.duel-bottom-disc {
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dpad-ring {
+  position: absolute;
+  width: 132px;
+  height: 132px;
+  border-radius: 999px;
+  border: 2px solid rgba(125, 211, 252, 0.38);
+}
+
+.dpad-core {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: linear-gradient(160deg, #0c1322, #090d16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(226, 232, 240, 0.9);
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.duel-screen {
+  border: 1px solid rgba(71, 85, 105, 0.7);
+  background: linear-gradient(165deg, #0b111d, #070a12);
+  box-shadow: inset 0 0 0 1px rgba(30, 64, 175, 0.25), inset 0 0 42px rgba(56, 189, 248, 0.16),
+    0 0 28px rgba(56, 189, 248, 0.12);
+}
+
+.duel-screen-inner {
+  border: 1px solid rgba(103, 232, 249, 0.18);
+  background: linear-gradient(160deg, rgba(8, 16, 30, 0.95), rgba(9, 11, 28, 0.93));
+  box-shadow: inset 0 0 0 1px rgba(250, 204, 21, 0.12), inset 0 0 28px rgba(56, 189, 248, 0.11);
+  position: relative;
+  overflow: hidden;
+}
+
+.duel-screen-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(148, 163, 184, 0.05) 0,
+    rgba(148, 163, 184, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+}
+
+.duel-controls {
+  border: 1px solid rgba(71, 85, 105, 0.75);
+  background: linear-gradient(170deg, rgba(10, 15, 27, 0.95), rgba(8, 11, 20, 0.95));
+  box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.16);
+}
+
+.duel-label {
+  display: inline-flex;
+  border: 1px solid rgba(103, 232, 249, 0.5);
+  background: rgba(8, 47, 73, 0.34);
+  color: #a5f3fc;
+  border-radius: 2px;
+  padding: 0.24rem 0.58rem;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.duel-heading {
+  font-family: "Orbitron", "Eurostile", "Segoe UI", sans-serif;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 18px rgba(56, 189, 248, 0.2);
+}
+
+.duel-gold-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(250, 204, 21, 0), rgba(250, 204, 21, 0.9), rgba(250, 204, 21, 0));
+  filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.4));
+}
+
+.duel-tab {
+  border: 1px solid rgba(71, 85, 105, 0.65);
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(9, 13, 23, 0.95));
+  color: #cbd5e1;
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.48rem 0.2rem;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  overflow: hidden;
+}
+
+.duel-tab::after,
+.duel-nav-btn::after,
+.duel-enter-btn::after,
+.duel-link-btn::after,
+.duel-quit-btn::after {
+  content: "";
+  position: absolute;
+  inset: -35% auto -35% -70%;
+  width: 34%;
+  background: linear-gradient(110deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transform: skewX(-12deg);
+  transition: transform 0.45s ease;
+}
+
+.duel-tab:hover::after,
+.duel-nav-btn:hover::after,
+.duel-enter-btn:hover::after,
+.duel-link-btn:hover::after,
+.duel-quit-btn:hover::after {
+  transform: translateX(430%) skewX(-12deg);
+}
+
+.duel-tab:hover {
+  transform: translateY(-1px);
+  border-color: rgba(125, 211, 252, 0.65);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+}
+
+.duel-tab-active {
+  color: #fef3c7;
+  border-color: rgba(250, 204, 21, 0.75);
+  background: linear-gradient(180deg, rgba(120, 53, 15, 0.7), rgba(69, 26, 3, 0.8));
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.26), inset 0 0 16px rgba(59, 130, 246, 0.2);
+}
+
+.duel-nav-btn,
+.duel-quit-btn,
+.duel-enter-btn,
+.duel-link-btn,
+.duel-button {
+  position: relative;
+  border-radius: 2px;
+  border: 1px solid rgba(71, 85, 105, 0.75);
+  background: linear-gradient(170deg, rgba(15, 23, 42, 0.95), rgba(9, 13, 23, 0.95));
+  color: #e2e8f0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.56rem 0.7rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(250, 204, 21, 0.08), inset 0 0 20px rgba(56, 189, 248, 0.08);
+}
+
+.duel-nav-btn:hover,
+.duel-quit-btn:hover,
+.duel-enter-btn:hover,
+.duel-link-btn:hover,
+.duel-button:hover {
+  transform: translateY(-1px) scale(1.02);
+  border-color: rgba(125, 211, 252, 0.66);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.18);
+  filter: saturate(1.15);
+}
+
+.duel-enter-btn {
+  border-color: rgba(250, 204, 21, 0.7);
+  background: linear-gradient(170deg, rgba(20, 28, 47, 0.95), rgba(11, 14, 24, 0.95));
+  box-shadow: inset 0 0 0 1px rgba(250, 204, 21, 0.22), inset 0 0 26px rgba(99, 102, 241, 0.2), 0 0 24px rgba(56, 189, 248, 0.14);
+}
+
+.duel-nav-btn-next {
+  border-color: rgba(250, 204, 21, 0.55);
+  box-shadow: inset 0 0 20px rgba(30, 64, 175, 0.16);
+}
+
+.duel-quit-btn {
+  border-color: rgba(220, 38, 38, 0.55);
+  box-shadow: inset 0 0 20px rgba(127, 29, 29, 0.24);
+}
+
+.deck-card,
+.timeline-card,
+.skill-card {
+  border: 1px solid rgba(71, 85, 105, 0.6);
+  border-radius: 6px;
+  background: linear-gradient(160deg, rgba(7, 14, 28, 0.88), rgba(10, 11, 25, 0.82));
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.08);
+  padding: 0.56rem;
+}
+
+.skill-chip {
+  border: 1px solid rgba(125, 211, 252, 0.35);
+  border-radius: 999px;
+  background: rgba(30, 64, 175, 0.22);
+  color: #dbeafe;
+  padding: 0.14rem 0.42rem;
+  font-size: 0.62rem;
+}
+
+@keyframes particleDrift {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-140px);
+  }
+}
+
+@keyframes stormPulse {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.36;
+  }
+}
+
+@keyframes twinkle {
+  0% {
+    opacity: 0.08;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes fogDrift {
+  0% {
+    transform: translateX(-1.2%) translateY(0);
+  }
+  100% {
+    transform: translateX(1.2%) translateY(-1%);
+  }
+}
+
+@keyframes gridPulse {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes gridShimmer {
+  0% {
+    transform: translateX(-70%);
+  }
+  100% {
+    transform: translateX(140%);
+  }
+}
+
+@keyframes vortexPulse {
+  0%,
+  100% {
+    opacity: 0.32;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.48;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes rayShift {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes runeFade {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes tapBlink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes cardFloat {
+  0%,
+  100% {
+    transform: translateY(-50%) translateZ(0);
+  }
+  50% {
+    transform: translateY(calc(-50% - 8px)) translateZ(0);
+  }
+}
+
+@keyframes cardIdleRotate {
+  0%,
+  100% {
+    transform: rotateY(-8deg) rotateX(2deg);
+  }
+  50% {
+    transform: rotateY(8deg) rotateX(-2deg);
+  }
+}
+
+@keyframes holoSweep {
+  0% {
+    transform: translateX(-95%) rotate(7deg);
+  }
+  100% {
+    transform: translateX(95%) rotate(7deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .duel-floating-card {
+    width: 112px;
+    height: 152px;
+    left: 0.6rem;
+  }
+
+  .duel-floating-card-terminal {
+    display: none;
+  }
+
+  .duel-bottom-disc {
+    width: 112px;
+    height: 112px;
+    left: -34px;
+  }
+
+  .closed-body {
+    padding-left: 8.4rem;
+  }
+
+  .dpad-ring {
+    width: 76px;
+    height: 76px;
+  }
+
+  .dpad-core {
+    width: 54px;
+    height: 54px;
+    font-size: 1.8rem;
+  }
+
+  .closed-screen {
+    min-height: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
