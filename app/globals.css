@@ -754,3 +754,65 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Layout flow fix: decorative display back is absolute, front panel and controls remain in flow */
+.duel-display-stack {
+  position: relative;
+  isolation: isolate;
+  margin-bottom: 0.35rem;
+}
+
+.duel-display-back {
+  position: absolute;
+  inset: -14px 1.2rem auto 1.2rem;
+  height: calc(100% + 8px);
+  border-radius: 1rem;
+  border: 1px solid rgba(71, 85, 105, 0.45);
+  background: linear-gradient(160deg, rgba(5, 10, 20, 0.62), rgba(8, 12, 22, 0.5));
+  box-shadow: 0 0 26px rgba(56, 189, 248, 0.08), inset 0 0 0 1px rgba(250, 204, 21, 0.06);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.duel-top {
+  position: relative;
+  z-index: 1;
+}
+
+.duel-bottom {
+  position: relative;
+  z-index: 2;
+  margin-top: 1rem;
+}
+
+/* Tap screen background image */
+.closed-screen-tap::before {
+  background-image: url("/yuhgi.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Decorative layers should never intercept input */
+.duel-floating-card-terminal,
+.duel-display-back,
+.duel-bg-night,
+.duel-bg-vortex,
+.duel-bg-rays,
+.duel-bg-storm,
+.duel-bg-fog,
+.duel-bg-grid,
+.duel-bg-runes,
+.duel-bg-particles {
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .duel-display-back {
+    inset: -10px 0.5rem auto 0.5rem;
+    height: calc(100% + 6px);
+  }
+
+  .duel-bottom {
+    margin-top: 0.8rem;
+  }
+}
