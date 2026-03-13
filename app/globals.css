@@ -19,6 +19,7 @@ a {
 
 .duel-stage {
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   background: radial-gradient(circle at 50% 18%, rgba(29, 78, 216, 0.08), transparent 45%),
     radial-gradient(circle at 80% 0%, rgba(127, 29, 29, 0.16), transparent 40%),
@@ -35,6 +36,7 @@ a {
 .duel-bg-particles {
   position: absolute;
   inset: 0;
+  z-index: -1;
   pointer-events: none;
 }
 
@@ -755,6 +757,13 @@ a {
   }
 }
 
+/* Tap screen background image */
+.closed-screen-tap::before {
+  background-image: url("/yuhgi.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
 /* Layout flow fix: decorative display back is absolute, front panel and controls remain in flow */
 .duel-display-stack {
   position: relative;
@@ -783,13 +792,6 @@ a {
   position: relative;
   z-index: 2;
   margin-top: 1rem;
-}
-
-/* Tap screen background image */
-.closed-screen-tap::before {
-  background-image: url("/yuhgi.jpg");
-  background-size: cover;
-  background-position: center;
 }
 
 /* Decorative layers should never intercept input */

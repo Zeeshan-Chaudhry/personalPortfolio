@@ -3,7 +3,7 @@
 import { useSfx } from "@/components/ui/SfxProvider";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 type TabKey = "info" | "projects" | "resume" | "contact";
 
@@ -103,17 +103,6 @@ export default function DuelConsole() {
             <div className="duel-display-stack">
               <div className="duel-display-back" aria-hidden />
               <div className="duel-top relative z-10 rounded-[1.2rem] p-4 md:p-5">
-                <div className="duel-floating-card duel-floating-card-terminal" aria-hidden>
-                  <div className="duel-floating-card-inner">
-                    <div className="duel-floating-card-face duel-floating-card-front">
-                      <Image src="/signature-card.png" alt="Zeeshan signature card" className="duel-card-image" fill sizes="160px" />
-                    </div>
-                    <div className="duel-floating-card-face duel-floating-card-back">
-                      <p className="duel-card-meta">Project Access</p>
-                      <p className="duel-card-title">My Projects Deck</p>
-                    </div>
-                  </div>
-                </div>
                 <div className="duel-screen rounded-xl p-3 md:p-4">
                   <motion.div
                     key={activeTab}
@@ -224,48 +213,132 @@ function InfoScreen() {
 }
 
 function ProjectsScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle") => void }) {
+  const sliderRef = useRef<HTMLDivElement>(null);
   const projectCards = [
     {
-      name: "3PL Software — Workflow Automation",
-      description: "Building automation tooling for a 3PL partner handling 700+ shipments/week.",
-      github: "https://github.com/Zeeshan-Chaudhry",
+      title: "3PL (In Progress)",
+      label: "Logistics Workflow Automation",
+      description:
+        "An operations software build focused on streamlining logistics workflows for a 3PL environment. The project is being developed around practical shipment handling, internal process tooling, and automation that supports day-to-day execution.",
+      stack: ["Logistics", "Workflow Automation", "Operations Software"],
+      href: "https://github.com/Zeeshan-Chaudhry/3PL",
+      why: "Important because it reflects founder-style product development around a real operating environment, not a classroom prompt.",
     },
     {
-      name: "Sultan Knives — E-Commerce Platform",
-      description: "Full-stack commerce platform supporting secure checkout and operations workflows.",
-      github: "https://github.com/Zeeshan-Chaudhry",
+      title: "PolyMarketAgent",
+      label: "Odds Comparison and Betting Assistant",
+      description:
+        "A betting assistant bot that compares Polymarket prices against sportsbook odds, converts both into implied probabilities, and surfaces better-value opportunities. It combines market ingest, signal generation, risk checks, a FastAPI service layer, and a monitoring dashboard.",
+      stack: ["Python", "FastAPI", "TypeScript", "Trading Systems", "API Integration", "Docker"],
+      href: "https://github.com/Zeeshan-Chaudhry/PolyMarketAgent",
+      why: "Important because it shows backend systems thinking, data-driven decision logic, and a stronger end-to-end architecture than a simple app demo.",
     },
     {
-      name: "Plato — PDF to Calendar Converter",
-      description: "Converts university outline PDFs into structured iCalendar exports with review tools.",
-      github: "https://github.com/Zeeshan-Chaudhry",
-    },
-    {
-      name: "Motive Rewards App APIs",
-      description: "Built and optimized REST APIs powering event discovery, ticketing, and analytics.",
-      github: "https://github.com/Zeeshan-Chaudhry",
+      title: "Plato",
+      label: "Course Outline to Calendar Converter",
+      description:
+        "A web application that extracts course information from Western University course outline PDFs and converts it into iCalendar (.ics) files for Google Calendar, Apple Calendar, and Outlook. It parses class schedules, assessments, and date rules, then generates a structured study calendar with editable review flows.",
+      stack: ["Python", "PDF Parsing", "Calendar Generation", "Flask", "Automation"],
+      href: "https://github.com/Zeeshan-Chaudhry/plato",
+      why: "Important because it turns messy real-world documents into a usable student workflow, which is strong evidence of product thinking and practical automation.",
     },
   ];
+
+  const scrollProjects = (direction: "prev" | "next") => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const step = Math.max(slider.clientWidth * 0.78, 260);
+    slider.scrollBy({
+      left: direction === "next" ? step : -step,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <div>
       <p className="duel-label">Projects</p>
-      <h2 className="mt-3 text-2xl text-yellow-100">Project Cards</h2>
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
+      <h2 className="mt-3 text-2xl text-yellow-100">Featured Builds</h2>
+      <p className="mt-2 max-w-2xl text-xs leading-relaxed text-slate-300 md:text-sm">
+        The strongest current projects are the ones closest to real workflows, technical leverage, and products that can keep compounding over time.
+      </p>
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <p className="text-[11px] uppercase tracking-[0.16em] text-slate-400">Top three featured from GitHub</p>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            aria-label="Previous projects"
+            onClick={() => {
+              play("nav");
+              scrollProjects("prev");
+            }}
+            onMouseEnter={() => play("nav")}
+            onFocus={() => play("nav")}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-cyan-300/30 bg-slate-950/50 text-cyan-200 transition hover:border-cyan-200/60 hover:bg-cyan-500/10"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            aria-label="Next projects"
+            onClick={() => {
+              play("nav");
+              scrollProjects("next");
+            }}
+            onMouseEnter={() => play("nav")}
+            onFocus={() => play("nav")}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-cyan-300/30 bg-slate-950/50 text-cyan-200 transition hover:border-cyan-200/60 hover:bg-cyan-500/10"
+          >
+            ›
+          </button>
+          <a
+            href="https://github.com/Zeeshan-Chaudhry?tab=repositories"
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => play("tap")}
+            onMouseEnter={() => play("nav")}
+            onFocus={() => play("nav")}
+            className="duel-link-btn px-3 py-2 text-[10px]"
+          >
+            View All
+          </a>
+        </div>
+      </div>
+      <div
+        ref={sliderRef}
+        className="mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      >
         {projectCards.map((project) => (
-          <article key={project.name} className="deck-card">
-            <h3 className="mt-1 text-sm text-yellow-100">{project.name}</h3>
-            <p className="mt-2 line-clamp-3 text-xs text-slate-300">{project.description}</p>
+          <article
+            key={project.title}
+            className="deck-card flex min-h-[250px] min-w-[85%] snap-start flex-col sm:min-w-[68%] lg:min-w-[31%]"
+          >
+            <p className="text-[11px] uppercase tracking-[0.16em] text-cyan-300">{project.label}</p>
+            <h3 className="mt-2 text-base text-yellow-100">{project.title}</h3>
+            <p className="mt-3 text-xs leading-relaxed text-slate-300">{project.description}</p>
+            <p className="mt-3 text-[11px] leading-relaxed text-slate-400">
+              <span className="text-cyan-200">Why it matters:</span> {project.why}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {project.stack.map((item) => (
+                <span
+                  key={`${project.title}-${item}`}
+                  className="rounded-full border border-cyan-300/35 bg-cyan-500/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-cyan-100"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
             <a
-              href={project.github}
+              href={project.href}
               target="_blank"
               rel="noreferrer"
               onClick={() => play("tap")}
               onMouseEnter={() => play("nav")}
               onFocus={() => play("nav")}
-              className="mt-2 inline-block text-xs text-cyan-300"
+              className="mt-auto pt-5 inline-flex items-center text-xs uppercase tracking-[0.14em] text-cyan-300"
             >
-              GitHub
+              View on GitHub
             </a>
           </article>
         ))}
