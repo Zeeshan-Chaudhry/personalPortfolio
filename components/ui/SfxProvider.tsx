@@ -2,7 +2,7 @@
 
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-type SfxKind = "tap" | "nav" | "toggle";
+type SfxKind = "tap" | "nav" | "toggle" | "disk";
 
 interface SfxContextValue {
   enabled: boolean;
@@ -20,6 +20,7 @@ function getAudioContext(): AudioContext | null {
 
 export function SfxProvider({ children }: { children: ReactNode }) {
   const contextRef = useRef<AudioContext | null>(null);
+  const tapAudioRef = useRef<HTMLAudioElement | null>(null);
   const [enabled, setEnabledState] = useState(false);
 
   useEffect(() => {
@@ -57,6 +58,18 @@ export function SfxProvider({ children }: { children: ReactNode }) {
     };
   }, [unlock]);
 
+  useEffect(() => {
+    const audio = new Audio("/set-card.mp3");
+    audio.preload = "auto";
+    audio.volume = 0.55;
+    tapAudioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      tapAudioRef.current = null;
+    };
+  }, []);
+
   const setEnabled = useCallback(
     (next: boolean) => {
       setEnabledState(next);
@@ -71,6 +84,19 @@ export function SfxProvider({ children }: { children: ReactNode }) {
   const play = useCallback(
     (kind: SfxKind = "tap") => {
       if (!enabled) return;
+
+      if (kind === "disk") {
+        const tapTemplate = tapAudioRef.current;
+        if (!tapTemplate) return;
+
+        const tapAudio = tapTemplate.cloneNode() as HTMLAudioElement;
+        tapAudio.volume = 0.55;
+        tapAudio.currentTime = 0;
+        void tapAudio.play().catch(() => {
+          // Ignore autoplay-style rejections and fail silently.
+        });
+        return;
+      }
 
       if (!contextRef.current) {
         contextRef.current = getAudioContext();

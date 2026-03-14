@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Duel Portfolio",
+  title: "Zeeshan's Portfolio",
   description: "Yu-Gi-Oh inspired interactive portfolio experience",
   icons: {
     icon: [{ url: "/signature-card.png", type: "image/png" }],
