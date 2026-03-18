@@ -92,116 +92,137 @@ export default function DuelConsole() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
             className="duel-shell w-full max-w-[1280px]"
           >
             <div className="duel-display-stack">
               <div className="duel-display-back" aria-hidden />
               <div className="duel-top duel-os-shell relative z-10 rounded-[1rem] p-3 md:p-4">
-                <div className="duel-os-topbar">
-                  <div>
-                    <p className="duel-os-brand">ZC // DUEL OS</p>
-                    <p className="duel-os-subtitle">Software engineer portfolio command workspace</p>
-                  </div>
-                  <div className="duel-os-topbar-right">
-                    <div className="duel-os-actions">
-                      <button type="button" onClick={() => { play("nav"); setActiveTab("info"); }} onMouseEnter={() => play("nav")} onFocus={() => play("nav")} className="duel-os-action-link">
-                        About
-                      </button>
-                      <button type="button" onClick={() => { play("nav"); setActiveTab("projects"); }} onMouseEnter={() => play("nav")} onFocus={() => play("nav")} className="duel-os-action-link">
-                        Projects
-                      </button>
-                      <a href="/Zeeshan_Resume_2026.pdf" download onClick={() => play("tap")} onMouseEnter={() => play("nav")} onFocus={() => play("nav")} className="duel-os-action-link">
-                        Resume
-                      </a>
-                      <a href="https://github.com/Zeeshan-Chaudhry" target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} onFocus={() => play("nav")} className="duel-os-action-link">
-                        GitHub
-                      </a>
-                      <a href="https://linkedin.com/in/zeeshannchaudhry" target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} onFocus={() => play("nav")} className="duel-os-action-link">
-                        LinkedIn
-                      </a>
-                      <a href="mailto:ZeeshanNawazChaudhry@gmail.com" onClick={() => play("tap")} onMouseEnter={() => play("nav")} onFocus={() => play("nav")} className="duel-os-action-link">
-                        Contact
-                      </a>
-                      <button
-                        type="button"
-                        onClick={returnHome}
-                        onMouseEnter={() => play("nav")}
-                        onFocus={() => play("nav")}
-                        className="duel-os-action-link text-red-200/90 hover:text-red-100"
-                      >
-                        Quit
-                      </button>
+
+                {/* ── HUD Top Bar ── */}
+                <div className="duel-hud-topbar">
+                  <div className="duel-hud-left">
+                    <div className="duel-hud-brand">
+                      <span className="duel-hud-logo">KC</span>
+                      <div>
+                        <p className="duel-hud-title">DUEL TERMINAL</p>
+                        <p className="duel-hud-ver">v4.2.0 // KAIBA CORP SYSTEMS</p>
+                      </div>
                     </div>
+                  </div>
+                  <div className="duel-hud-center">
+                    <div className="duel-hud-lp">
+                      <span className="duel-hud-lp-label">LP</span>
+                      <span className="duel-hud-lp-value">4000</span>
+                      <span className="duel-hud-lp-bar" aria-hidden />
+                    </div>
+                  </div>
+                  <div className="duel-hud-right">
+                    <div className="duel-hud-status">
+                      <span className="duel-hud-dot" />
+                      <span className="duel-hud-status-text">ONLINE</span>
+                    </div>
+                    <button type="button" onClick={returnHome} onMouseEnter={() => play("nav")} className="duel-hud-quit">
+                      END DUEL
+                    </button>
                   </div>
                 </div>
 
+                {/* ── Navigation Links ── */}
+                <div className="duel-hud-nav">
+                  <div className="duel-hud-nav-links">
+                    <button type="button" onClick={() => { play("nav"); setActiveTab("info"); }} onMouseEnter={() => play("nav")} className={`duel-hud-nav-link ${activeTab === "info" ? "duel-hud-nav-active" : ""}`}>
+                      <span className="duel-hud-nav-icon">&#9670;</span> About
+                    </button>
+                    <button type="button" onClick={() => { play("nav"); setActiveTab("projects"); }} onMouseEnter={() => play("nav")} className={`duel-hud-nav-link ${activeTab === "projects" ? "duel-hud-nav-active" : ""}`}>
+                      <span className="duel-hud-nav-icon">&#9670;</span> Projects
+                    </button>
+                    <button type="button" onClick={() => { play("nav"); setActiveTab("resume"); }} onMouseEnter={() => play("nav")} className={`duel-hud-nav-link ${activeTab === "resume" ? "duel-hud-nav-active" : ""}`}>
+                      <span className="duel-hud-nav-icon">&#9670;</span> Resume
+                    </button>
+                    <button type="button" onClick={() => { play("nav"); setActiveTab("contact"); }} onMouseEnter={() => play("nav")} className={`duel-hud-nav-link ${activeTab === "contact" ? "duel-hud-nav-active" : ""}`}>
+                      <span className="duel-hud-nav-icon">&#9670;</span> Contact
+                    </button>
+                  </div>
+                  <div className="duel-hud-nav-ext">
+                    <a href="/Zeeshan_Resume_2026.pdf" download onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="duel-hud-ext-link">Resume PDF</a>
+                    <a href="https://github.com/Zeeshan-Chaudhry" target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="duel-hud-ext-link">GitHub</a>
+                    <a href="https://linkedin.com/in/zeeshannchaudhry" target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="duel-hud-ext-link">LinkedIn</a>
+                  </div>
+                </div>
+
+                {/* ── Main Screen ── */}
                 <div className="duel-os-layout mt-3">
                   <div className="duel-screen duel-os-workspace rounded-xl p-2.5 md:p-3">
+                    {/* HUD corner decorations */}
+                    <div className="duel-screen-corner duel-screen-corner-tl" aria-hidden />
+                    <div className="duel-screen-corner duel-screen-corner-tr" aria-hidden />
+                    <div className="duel-screen-corner duel-screen-corner-bl" aria-hidden />
+                    <div className="duel-screen-corner duel-screen-corner-br" aria-hidden />
+
                     <motion.div
                       key={activeTab}
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2 }}
-                      className="duel-screen-inner duel-os-screen min-h-[255px] rounded-lg p-5 md:min-h-[300px] md:p-6"
+                      className="duel-screen-inner duel-os-screen min-h-[280px] rounded-lg p-5 md:min-h-[320px] md:p-6"
                     >
                       {activeTab === "info" && <InfoScreen />}
                       {activeTab === "projects" && <ProjectsScreen play={play} />}
                       {activeTab === "resume" && <ResumeScreen play={play} />}
                       {activeTab === "contact" && <ContactScreen play={play} />}
                     </motion.div>
+
+                    {/* Status bar */}
+                    <div className="duel-screen-statusbar">
+                      <span>SECTOR: {activeTab.toUpperCase()}</span>
+                      <span>DUELIST: ZEESHAN CHAUDHRY</span>
+                      <span className="duel-screen-statusbar-blink">DECK LOADED</span>
+                    </div>
                   </div>
                 </div>
 
-                <div
-                  className={`duel-disk-wrap duel-disk-state-${tabs.findIndex((tab) => tab.key === activeTab)} mt-3`}
-                  aria-label="Duel disk navigation"
-                >
-                  <div className="duel-disk-core" aria-hidden>
-                    <div className="duel-disk-wheel" />
-                    <div className="duel-disk-wheel-center" />
-                    <div className="duel-disk-vents">
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                    <div className="duel-disk-head">
-                      <div className="duel-disk-head-mark" />
-                      <div className="duel-disk-head-grille">
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                      </div>
-                    </div>
-                    <div className="duel-disk-body">
-                      <div className="duel-disk-body-badge" />
-                    </div>
-                    <div className="duel-disk-ring" />
-                    <div className="duel-disk-emblem">ZC</div>
-                  </div>
-                  <div className="duel-disk-arm" aria-hidden />
-                  <div className="duel-disk-slots">
-                    {tabs.map((tab) => (
-                      <button
-                        key={tab.key}
-                        type="button"
-                        onClick={() => {
-                          play("disk");
-                          setActiveTab(tab.key);
-                        }}
-                        onMouseEnter={() => play("disk")}
-                        onFocus={() => play("disk")}
-                        className={`duel-disk-slot duel-disk-slot-${tab.key} ${activeTab === tab.key ? "duel-disk-slot-active" : ""}`}
-                        aria-current={activeTab === tab.key ? "page" : undefined}
-                      >
-                        <span className="duel-disk-slot-index">0{tabs.findIndex((item) => item.key === tab.key) + 1}</span>
-                        <span className="duel-disk-slot-frame" aria-hidden />
-                        <span className="duel-disk-slot-notch" aria-hidden />
-                        <span className="duel-disk-slot-label">{tab.label}</span>
-                      </button>
-                    ))}
-                  </div>
+              </div>
+            </div>
+            {/* ── Duel Disk Navigation ── */}
+            <div className="dd mt-4" aria-label="Duel disk navigation">
+              {/* Core wrist mount */}
+              <div className="dd-core" aria-hidden>
+                <div className="dd-core-outer" />
+                <div className="dd-core-ring" />
+                <div className="dd-core-red">
+                  <div className="dd-core-red-wing dd-core-red-l" />
+                  <div className="dd-core-red-wing dd-core-red-r" />
+                  <div className="dd-core-red-top" />
+                </div>
+                <div className="dd-core-lp">
+                  <span className="dd-core-lp-val">4000</span>
+                </div>
+              </div>
+
+              {/* Blade with card zones */}
+              <div className="dd-blade">
+                <div className="dd-blade-body" aria-hidden />
+
+                <div className="dd-zones">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => { play("disk"); setActiveTab(tab.key); }}
+                      onMouseEnter={() => play("disk")}
+                      className={`dd-zone ${activeTab === tab.key ? "dd-zone-active" : ""}`}
+                      aria-current={activeTab === tab.key ? "page" : undefined}
+                    >
+                      <span className="dd-zone-tri" aria-hidden />
+                      <span className="dd-zone-label">{tab.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Connectors between zones */}
+                <div className="dd-connectors" aria-hidden>
+                  <span /><span /><span />
                 </div>
               </div>
             </div>
