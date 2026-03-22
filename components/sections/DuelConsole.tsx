@@ -1,9 +1,9 @@
 "use client";
 
 import { useSfx } from "@/components/ui/SfxProvider";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type TabKey = "info" | "projects" | "resume" | "contact";
 
@@ -90,122 +90,71 @@ export default function DuelConsole() {
           </motion.div>
         ) : (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            initial={{ opacity: 0, scale: 0.97, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="duel-shell w-full max-w-[1280px]"
           >
-            <div className="duel-display-stack">
-              <div className="duel-display-back" aria-hidden />
-              <div className="duel-top duel-os-shell relative z-10 rounded-[1rem] p-3 md:p-4">
+            {/* Projection cone from duel disk */}
+            <div className="holo-projection-cone" aria-hidden />
 
-                {/* ── HUD Top Bar ── */}
-                <div className="duel-hud-topbar">
-                  <div className="duel-hud-left">
-                    <div className="duel-hud-brand">
-                      <span className="duel-hud-logo">KC</span>
-                      <div>
-                        <p className="duel-hud-title">DUEL TERMINAL</p>
-                        <p className="duel-hud-ver">v4.2.0 // KAIBA CORP SYSTEMS</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="duel-hud-center">
-                    <div className="duel-hud-lp">
-                      <span className="duel-hud-lp-label">LP</span>
-                      <span className="duel-hud-lp-value">4000</span>
-                      <span className="duel-hud-lp-bar" aria-hidden />
-                    </div>
-                  </div>
-                  <div className="duel-hud-right">
-                    <div className="duel-hud-status">
-                      <span className="duel-hud-dot" />
-                      <span className="duel-hud-status-text">ONLINE</span>
-                    </div>
-                    <button type="button" onClick={returnHome} onMouseEnter={() => play("nav")} className="duel-hud-quit">
-                      END DUEL
-                    </button>
+            {/* ── Blue-Eyes White Dragon Card ── */}
+
+            <div className="holo-shell">
+              {/* ── Holographic Header ── */}
+              <div className="holo-header">
+                <div className="holo-header-left">
+                  <span className="holo-header-icon">◆</span>
+                  <span className="holo-header-tab">{activeTab.toUpperCase()}</span>
+                </div>
+                <button type="button" onClick={returnHome} onMouseEnter={() => play("nav")} className="holo-header-quit">
+                  END DUEL
+                </button>
+              </div>
+
+              {/* ── Holographic Screen ── */}
+              <div className="holo-screen">
+                {/* Corner chevrons */}
+                <div className="holo-corner holo-corner-tl" aria-hidden />
+                <div className="holo-corner holo-corner-tr" aria-hidden />
+                <div className="holo-corner holo-corner-bl" aria-hidden />
+                <div className="holo-corner holo-corner-br" aria-hidden />
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    className="holo-content h-[480px] overflow-y-auto p-5 md:h-[520px] md:p-6"
+                  >
+                    {activeTab === "info" && <InfoScreen />}
+                    {activeTab === "projects" && <ProjectsScreen play={play} />}
+                    {activeTab === "resume" && <ResumeScreen play={play} />}
+                    {activeTab === "contact" && <ContactScreen play={play} />}
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Status bar with external links */}
+                <div className="holo-statusbar">
+                  <span className="holo-statusbar-sector">◆ {activeTab.toUpperCase()}</span>
+                  <div className="holo-statusbar-links">
+                    <a href="https://github.com/Zeeshan-Chaudhry" target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")}>GitHub</a>
+                    <a href="https://linkedin.com/in/zeeshannchaudhry" target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")}>LinkedIn</a>
+                    <a href="/Zeeshan_Resume_2026.pdf" download onClick={() => play("tap")} onMouseEnter={() => play("nav")}>Resume</a>
                   </div>
                 </div>
-
-                {/* ── Navigation Links ── */}
-                <div className="duel-hud-nav">
-                  <div className="duel-hud-nav-links">
-                    <button type="button" onClick={() => { play("nav"); setActiveTab("info"); }} onMouseEnter={() => play("nav")} className={`duel-hud-nav-link ${activeTab === "info" ? "duel-hud-nav-active" : ""}`}>
-                      <span className="duel-hud-nav-icon">&#9670;</span> About
-                    </button>
-                    <button type="button" onClick={() => { play("nav"); setActiveTab("projects"); }} onMouseEnter={() => play("nav")} className={`duel-hud-nav-link ${activeTab === "projects" ? "duel-hud-nav-active" : ""}`}>
-                      <span className="duel-hud-nav-icon">&#9670;</span> Projects
-                    </button>
-                    <button type="button" onClick={() => { play("nav"); setActiveTab("resume"); }} onMouseEnter={() => play("nav")} className={`duel-hud-nav-link ${activeTab === "resume" ? "duel-hud-nav-active" : ""}`}>
-                      <span className="duel-hud-nav-icon">&#9670;</span> Resume
-                    </button>
-                    <button type="button" onClick={() => { play("nav"); setActiveTab("contact"); }} onMouseEnter={() => play("nav")} className={`duel-hud-nav-link ${activeTab === "contact" ? "duel-hud-nav-active" : ""}`}>
-                      <span className="duel-hud-nav-icon">&#9670;</span> Contact
-                    </button>
-                  </div>
-                  <div className="duel-hud-nav-ext">
-                    <a href="/Zeeshan_Resume_2026.pdf" download onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="duel-hud-ext-link">Resume PDF</a>
-                    <a href="https://github.com/Zeeshan-Chaudhry" target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="duel-hud-ext-link">GitHub</a>
-                    <a href="https://linkedin.com/in/zeeshannchaudhry" target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="duel-hud-ext-link">LinkedIn</a>
-                  </div>
-                </div>
-
-                {/* ── Main Screen ── */}
-                <div className="duel-os-layout mt-3">
-                  <div className="duel-screen duel-os-workspace rounded-xl p-2.5 md:p-3">
-                    {/* HUD corner decorations */}
-                    <div className="duel-screen-corner duel-screen-corner-tl" aria-hidden />
-                    <div className="duel-screen-corner duel-screen-corner-tr" aria-hidden />
-                    <div className="duel-screen-corner duel-screen-corner-bl" aria-hidden />
-                    <div className="duel-screen-corner duel-screen-corner-br" aria-hidden />
-
-                    <motion.div
-                      key={activeTab}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="duel-screen-inner duel-os-screen min-h-[280px] rounded-lg p-5 md:min-h-[320px] md:p-6"
-                    >
-                      {activeTab === "info" && <InfoScreen />}
-                      {activeTab === "projects" && <ProjectsScreen play={play} />}
-                      {activeTab === "resume" && <ResumeScreen play={play} />}
-                      {activeTab === "contact" && <ContactScreen play={play} />}
-                    </motion.div>
-
-                    {/* Status bar */}
-                    <div className="duel-screen-statusbar">
-                      <span>SECTOR: {activeTab.toUpperCase()}</span>
-                      <span>DUELIST: ZEESHAN CHAUDHRY</span>
-                      <span className="duel-screen-statusbar-blink">DECK LOADED</span>
-                    </div>
-                  </div>
-                </div>
-
               </div>
             </div>
+
             {/* ── Duel Disk Navigation ── */}
-            <div className="dd mt-4" aria-label="Duel disk navigation">
-              {/* Core wrist mount */}
-              <div className="dd-core" aria-hidden>
-                <div className="dd-core-outer" />
-                <div className="dd-core-ring" />
-                <div className="dd-core-red">
-                  <div className="dd-core-red-wing dd-core-red-l" />
-                  <div className="dd-core-red-wing dd-core-red-r" />
-                  <div className="dd-core-red-top" />
-                </div>
-                <div className="dd-core-lp">
-                  <span className="dd-core-lp-val">4000</span>
-                </div>
-              </div>
-
-              {/* Blade with card zones */}
-              <div className="dd-blade">
-                <div className="dd-blade-body" aria-hidden />
-
-                <div className="dd-zones">
-                  {tabs.map((tab) => (
+            <div className="dd mt-6" aria-label="Duel disk navigation">
+              {/* Left blade arm */}
+              <div className="dd-arm dd-arm-l">
+                <div className="dd-arm-body" aria-hidden />
+                <div className="dd-arm-zones">
+                  {tabs.slice(0, 2).map((tab) => (
                     <button
                       key={tab.key}
                       type="button"
@@ -216,14 +165,50 @@ export default function DuelConsole() {
                     >
                       <span className="dd-zone-tri" aria-hidden />
                       <span className="dd-zone-label">{tab.label}</span>
+                      <span className="dd-zone-holo" aria-hidden />
                     </button>
                   ))}
                 </div>
+                <div className="dd-arm-connector" aria-hidden />
+              </div>
 
-                {/* Connectors between zones */}
-                <div className="dd-connectors" aria-hidden>
-                  <span /><span /><span />
+              {/* Core wrist mount */}
+              <div className="dd-core">
+                <div className="dd-core-outer" />
+                <div className="dd-core-ring" />
+                <div className="dd-core-bolts" aria-hidden>
+                  <span /><span /><span /><span />
                 </div>
+                <div className="dd-core-red">
+                  <div className="dd-core-red-wing dd-core-red-l" />
+                  <div className="dd-core-red-wing dd-core-red-r" />
+                  <div className="dd-core-red-top" />
+                </div>
+                <div className="dd-core-lp">
+                  <span className="dd-core-lp-val">4000</span>
+                </div>
+              </div>
+
+              {/* Right blade arm */}
+              <div className="dd-arm dd-arm-r">
+                <div className="dd-arm-body" aria-hidden />
+                <div className="dd-arm-zones">
+                  {tabs.slice(2, 4).map((tab) => (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => { play("disk"); setActiveTab(tab.key); }}
+                      onMouseEnter={() => play("disk")}
+                      className={`dd-zone ${activeTab === tab.key ? "dd-zone-active" : ""}`}
+                      aria-current={activeTab === tab.key ? "page" : undefined}
+                    >
+                      <span className="dd-zone-tri" aria-hidden />
+                      <span className="dd-zone-label">{tab.label}</span>
+                      <span className="dd-zone-holo" aria-hidden />
+                    </button>
+                  ))}
+                </div>
+                <div className="dd-arm-connector" aria-hidden />
               </div>
             </div>
             <p className="mt-5 text-center text-xs text-slate-100/90">© 2026 Zeeshan Chaudhry. All rights reserved.</p>
@@ -234,74 +219,123 @@ export default function DuelConsole() {
   );
 }
 
-function InfoScreen() {
+function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return (
-    <div>
-      <h2 className="duel-heading text-4xl text-yellow-100 md:text-5xl">Zeeshan Chaudhry</h2>
-      <p className="mt-3 max-w-4xl text-base text-cyan-200 md:text-lg">
-        Full-stack product engineer building practical software, startup tools, and systems that move from idea to real-world use.
-      </p>
-      <p className="mt-5 max-w-4xl text-sm leading-relaxed text-slate-200 md:text-base">
-        I work at the intersection of engineering, product thinking, and execution. The strongest projects here are the ones rooted
-        in real workflows, operational problems, and software that can keep compounding beyond the first release.
-      </p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
-      <div className="mt-7 space-y-6">
-        <section>
-          <div className="grid gap-4 lg:grid-cols-3">
-            <article className="deck-card p-4">
-              <h3 className="text-lg text-yellow-100">Plato</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                Converts course outline PDFs into structured study calendars and usable academic planning workflows.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.12em] text-cyan-100">
-                <span className="rounded-full border border-cyan-300/30 px-2 py-1">Python</span>
-                <span className="rounded-full border border-cyan-300/30 px-2 py-1">PDF Parsing</span>
-                <span className="rounded-full border border-cyan-300/30 px-2 py-1">Automation</span>
-              </div>
-            </article>
+function SkillBar({ label, level, delay = 0 }: { label: string; level: number; delay?: number }) {
+  return (
+    <motion.div
+      className="skill-bar-row"
+      initial={{ opacity: 0, x: -16 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <span className="skill-bar-label">{label}</span>
+      <div className="skill-bar-track">
+        <motion.div
+          className="skill-bar-fill"
+          initial={{ width: 0 }}
+          whileInView={{ width: `${level}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: delay + 0.2, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </div>
+    </motion.div>
+  );
+}
 
-            <article className="deck-card p-4">
-              <h3 className="text-lg text-yellow-100">PolyMarketAgent</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                Compares market prices and sportsbook odds through implied probability logic, signal generation, and monitoring.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.12em] text-cyan-100">
-                <span className="rounded-full border border-cyan-300/30 px-2 py-1">FastAPI</span>
-                <span className="rounded-full border border-cyan-300/30 px-2 py-1">TypeScript</span>
-                <span className="rounded-full border border-cyan-300/30 px-2 py-1">Trading Systems</span>
-              </div>
-            </article>
+function InfoScreen() {
+  const skills = [
+    { label: "TypeScript", level: 92 },
+    { label: "Python", level: 85 },
+    { label: "React / RN", level: 90 },
+    { label: "Node / Nest", level: 88 },
+    { label: "Swift", level: 78 },
+    { label: "AI / LLMs", level: 82 },
+  ];
 
-            <article className="deck-card p-4">
-              <h3 className="text-lg text-yellow-100">3PL (In Progress)</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                Workflow software focused on logistics execution, internal tooling, and real operational constraints.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.12em] text-cyan-100">
-                <span className="rounded-full border border-cyan-300/30 px-2 py-1">Operations</span>
-                <span className="rounded-full border border-cyan-300/30 px-2 py-1">Workflow Automation</span>
-                <span className="rounded-full border border-cyan-300/30 px-2 py-1">In Progress</span>
+  return (
+    <div className="section-content">
+      <div className="grid gap-6 md:grid-cols-[1fr_300px]">
+        {/* Left: Bio + Timeline + Skills */}
+        <div>
+          <ScrollReveal>
+            <p className="duel-label">About</p>
+            <h2 className="duel-heading mt-3 text-3xl text-yellow-100 md:text-4xl">Zeeshan Chaudhry</h2>
+            <p className="mt-3 max-w-2xl text-sm text-cyan-200 md:text-base">
+              Full-stack product engineer building practical software, startup tools, and systems that move from idea to real-world use.
+            </p>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.1}>
+            <p className="mt-4 max-w-2xl text-xs leading-relaxed text-slate-300 md:text-sm">
+              I&apos;ve been playing video games since I was 4. That&apos;s what got me into Yu-Gi-Oh, and I spent years collecting cards, playing competitively, and grinding ranked duels online. It was a huge part of growing up for me, so it felt right to theme my portfolio around it. I started messing around with Scratch when I was 9, built my first actual game in Java at 11, and from there I just kept building. Now I&apos;m studying Computer Science at Western, working as a software engineer intern, and shipping real products. I&apos;ve built things like AI-powered order systems for e-commerce businesses and research tools used out in the field at geological sites. At the end of the day, I want to build things that can change the world, not just look good in a demo.
+            </p>
+          </ScrollReveal>
+
+          {/* Skill Bars */}
+          <ScrollReveal delay={0.2}>
+            <div className="mt-5">
+              <p className="text-[10px] uppercase tracking-[0.16em] text-cyan-200/50 mb-3">Power Levels</p>
+              <div className="skill-bars">
+                {skills.map((s, i) => (
+                  <SkillBar key={s.label} label={s.label} level={s.level} delay={i * 0.06} />
+                ))}
               </div>
-            </article>
+            </div>
+          </ScrollReveal>
+
+          {/* Stats */}
+          <ScrollReveal delay={0.3}>
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {[
+                { label: "School", value: "Western University" },
+                { label: "Program", value: "Computer Science" },
+                { label: "Location", value: "Toronto, Canada" },
+                { label: "Status", value: "Open to Work" },
+              ].map((stat) => (
+                <div key={stat.label} className="deck-card deck-card-hover p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-cyan-200/50">{stat.label}</p>
+                  <p className="mt-1 text-xs font-medium text-slate-200">{stat.value}</p>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+
+        {/* Right: Blue-Eyes White Dragon */}
+        <div className="about-card-column">
+          <div className="bewd" aria-hidden>
+            <div className="bewd-glow" />
+            <div className="bewd-energy bewd-energy-1" />
+            <div className="bewd-energy bewd-energy-2" />
+            <div className="bewd-energy bewd-energy-3" />
+            <div className="bewd-dragon">
+              <Image
+                src="/Blue_Eyes.webp"
+                alt="Blue-Eyes White Dragon"
+                width={360}
+                height={360}
+                className="bewd-img"
+                priority
+              />
+            </div>
+            <div className="bewd-particles">
+              <span /><span /><span /><span /><span /><span />
+            </div>
           </div>
-        </section>
-
-        <section className="deck-card p-4">
-          <div className="flex flex-wrap gap-3 text-sm text-slate-300">
-            <span className="text-cyan-200">Motive Rewards</span>
-            <span className="text-slate-500">/</span>
-            <span>React Native features and 20+ Node/Express APIs</span>
-            <span className="text-slate-500">/</span>
-            <span className="text-cyan-200">SpaceRocks</span>
-            <span className="text-slate-500">/</span>
-            <span>SwiftUI features and offline sync reliability</span>
-            <span className="text-slate-500">/</span>
-            <span className="text-cyan-200">Fleex</span>
-            <span className="text-slate-500">/</span>
-            <span>Dashboard features, BTCPay integration, hardened OAuth</span>
-          </div>
-        </section>
+        </div>
       </div>
     </div>
   );
@@ -311,13 +345,14 @@ function ProjectsScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle") => v
   const sliderRef = useRef<HTMLDivElement>(null);
   const projectCards = [
     {
-      title: "3PL (In Progress)",
-      label: "Logistics Workflow Automation",
+      title: "AI OrderFlow",
+      label: "Family Business Automation",
       description:
-        "An operations software build focused on streamlining logistics workflows for a 3PL environment. The project is being developed around practical shipment handling, internal process tooling, and automation that supports day-to-day execution.",
-      stack: ["Logistics", "Workflow Automation", "Operations Software"],
-      href: "https://github.com/Zeeshan-Chaudhry/3PL",
-      why: "Important because it reflects founder-style product development around a real operating environment, not a classroom prompt.",
+        "Automated an end-to-end order fulfillment pipeline for an e-commerce business processing 100+ orders/day across Etsy and Shopify. Built email webhook integrations with Zapier, then migrated to custom webhooks powered by Claude API for accurate order parsing. Automated cron jobs forward orders to a 3PL warehouse and purchase shipping labels via EasyShip API, reducing fulfillment time from hours to minutes.",
+      stack: ["TypeScript", "Next.js", "Node.js", "PostgreSQL", "Claude API", "EasyShip API"],
+      href: "https://dynastyblades.com",
+      why: "Real business automation eliminating manual order management as the business scaled. Not a demo project.",
+      linkLabel: "DynastyBlades.com",
     },
     {
       title: "PolyMarketAgent",
@@ -326,7 +361,8 @@ function ProjectsScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle") => v
         "A betting assistant bot that compares Polymarket prices against sportsbook odds, converts both into implied probabilities, and surfaces better-value opportunities. It combines market ingest, signal generation, risk checks, a FastAPI service layer, and a monitoring dashboard.",
       stack: ["Python", "FastAPI", "TypeScript", "Trading Systems", "API Integration", "Docker"],
       href: "https://github.com/Zeeshan-Chaudhry/PolyMarketAgent",
-      why: "Important because it shows backend systems thinking, data-driven decision logic, and a stronger end-to-end architecture than a simple app demo.",
+      why: "Backend systems thinking, data-driven decision logic, and end-to-end architecture beyond a simple app demo.",
+      linkLabel: "View on GitHub",
     },
     {
       title: "Plato",
@@ -335,7 +371,38 @@ function ProjectsScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle") => v
         "A web application that extracts course information from Western University course outline PDFs and converts it into iCalendar (.ics) files for Google Calendar, Apple Calendar, and Outlook. It parses class schedules, assessments, and date rules, then generates a structured study calendar with editable review flows.",
       stack: ["Python", "PDF Parsing", "Calendar Generation", "Flask", "Automation"],
       href: "https://github.com/Zeeshan-Chaudhry/plato",
-      why: "Important because it turns messy real-world documents into a usable student workflow, which is strong evidence of product thinking and practical automation.",
+      why: "Turns messy real-world documents into a usable student workflow. Evidence of product thinking and practical automation.",
+      linkLabel: "View on GitHub",
+    },
+    {
+      title: "AI Reactivation Agent",
+      label: "Customer Win-Back Automation",
+      description:
+        "A FastAPI backend that automates customer reactivation workflows. It enriches churned customer data from HubSpot CRM, runs CrewAI-based reasoning to analyze churn reasons and recommend outreach strategies, drafts personalized reactivation emails via Gmail, and stores audit history in SQLite. Draft-first system with escalation logic for risky conversations.",
+      stack: ["Python", "FastAPI", "CrewAI", "HubSpot API", "Docker", "SQLite"],
+      href: "https://github.com/Zeeshan-Chaudhry/AI-Reactivation-Agent",
+      why: "End-to-end AI agent pipeline with real CRM integrations, not just a wrapper around an LLM call.",
+      linkLabel: "View on GitHub",
+    },
+    {
+      title: "Western Geologist Notebook",
+      label: "iOS Field Data Collection App",
+      description:
+        "An iOS app built for the Osinski Planetary Research Lab at Western University, used by 120+ operators across remote geological sites. Features offline-first data sync, role-based authentication via Firebase, and PDF document viewing for field reference materials.",
+      stack: ["Swift", "Firebase", "iOS", "Offline Sync", "Role-Based Auth"],
+      href: "https://github.com/Zeeshan-Chaudhry/WesternGeologistNoteBook",
+      why: "Production app used by real researchers in the field. Built for a $60K+ funded research initiative.",
+      linkLabel: "View on GitHub",
+    },
+    {
+      title: "This Portfolio",
+      label: "Yu-Gi-Oh Themed Interactive Portfolio",
+      description:
+        "The site you are looking at right now. A fully custom Next.js portfolio themed around Yu-Gi-Oh duel disks, with holographic UI, sound effects, animated transitions, and a card-based navigation system.",
+      stack: ["TypeScript", "Next.js", "Framer Motion", "Tailwind CSS"],
+      href: "https://github.com/Zeeshan-Chaudhry/personalPortfolio",
+      why: "Shows personality and frontend craft beyond a standard template portfolio.",
+      linkLabel: "View on GitHub",
     },
   ];
 
@@ -351,91 +418,49 @@ function ProjectsScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle") => v
   };
 
   return (
-    <div>
-      <p className="duel-label">Projects</p>
-      <h2 className="mt-3 text-2xl text-yellow-100">Featured Builds</h2>
-      <p className="mt-2 max-w-2xl text-xs leading-relaxed text-slate-300 md:text-sm">
-        The strongest current projects are the ones closest to real workflows, technical leverage, and products that can keep compounding over time.
-      </p>
-      <div className="mt-4 flex items-center justify-between gap-3">
-        <p className="text-[11px] uppercase tracking-[0.16em] text-slate-400">Top three featured from GitHub</p>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Previous projects"
-            onClick={() => {
-              play("nav");
-              scrollProjects("prev");
-            }}
-            onMouseEnter={() => play("nav")}
-            onFocus={() => play("nav")}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-cyan-300/30 bg-slate-950/50 text-cyan-200 transition hover:border-cyan-200/60 hover:bg-cyan-500/10"
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            aria-label="Next projects"
-            onClick={() => {
-              play("nav");
-              scrollProjects("next");
-            }}
-            onMouseEnter={() => play("nav")}
-            onFocus={() => play("nav")}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-cyan-300/30 bg-slate-950/50 text-cyan-200 transition hover:border-cyan-200/60 hover:bg-cyan-500/10"
-          >
-            ›
-          </button>
-          <a
-            href="https://github.com/Zeeshan-Chaudhry?tab=repositories"
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => play("tap")}
-            onMouseEnter={() => play("nav")}
-            onFocus={() => play("nav")}
-            className="duel-link-btn px-3 py-2 text-[10px]"
-          >
-            View All
-          </a>
+    <div className="section-content">
+      <ScrollReveal>
+        <p className="duel-label">Projects</p>
+        <h2 className="duel-heading mt-3 text-2xl text-yellow-100 md:text-3xl">Featured Builds</h2>
+        <p className="mt-2 max-w-2xl text-xs leading-relaxed text-slate-300 md:text-sm">
+          The strongest current projects. Closest to real workflows, technical leverage, and compounding value.
+        </p>
+      </ScrollReveal>
+      <ScrollReveal delay={0.15}>
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <p className="text-[10px] uppercase tracking-[0.16em] text-slate-500">Featured from GitHub</p>
+          <div className="flex items-center gap-2">
+            <button type="button" aria-label="Previous" onClick={() => { play("nav"); scrollProjects("prev"); }} onMouseEnter={() => play("nav")} className="scroll-btn">‹</button>
+            <button type="button" aria-label="Next" onClick={() => { play("nav"); scrollProjects("next"); }} onMouseEnter={() => play("nav")} className="scroll-btn">›</button>
+            <a href="https://github.com/Zeeshan-Chaudhry" target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="duel-link-btn px-3 py-1.5 text-[10px]">View All</a>
+          </div>
         </div>
-      </div>
-      <div
-        ref={sliderRef}
-        className="mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {projectCards.map((project) => (
-          <article
+      </ScrollReveal>
+      <div ref={sliderRef} className="mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {projectCards.map((project, i) => (
+          <motion.article
             key={project.title}
-            className="deck-card flex min-h-[250px] min-w-[85%] snap-start flex-col sm:min-w-[68%] lg:min-w-[31%]"
+            initial={{ opacity: 0, y: 20, scale: 0.96 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="deck-card deck-card-hover flex min-h-[240px] min-w-[85%] snap-start flex-col p-4 sm:min-w-[68%] lg:min-w-[31%]"
           >
-            <p className="text-[11px] uppercase tracking-[0.16em] text-cyan-300">{project.label}</p>
-            <h3 className="mt-2 text-base text-yellow-100">{project.title}</h3>
-            <p className="mt-3 text-xs leading-relaxed text-slate-300">{project.description}</p>
-            <p className="mt-3 text-[11px] leading-relaxed text-slate-400">
-              <span className="text-cyan-200">Why it matters:</span> {project.why}
+            <p className="text-[10px] uppercase tracking-[0.16em] text-cyan-300/80">{project.label}</p>
+            <h3 className="mt-2 text-base font-semibold text-yellow-100">{project.title}</h3>
+            <p className="mt-2 text-xs leading-relaxed text-slate-300">{project.description}</p>
+            <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
+              <span className="text-cyan-200/80">Why it matters:</span> {project.why}
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-1.5">
               {project.stack.map((item) => (
-                <span
-                  key={`${project.title}-${item}`}
-                  className="rounded-full border border-cyan-300/35 bg-cyan-500/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-cyan-100"
-                >
-                  {item}
-                </span>
+                <span key={`${project.title}-${item}`} className="tech-chip">{item}</span>
               ))}
             </div>
-            <a
-              href={project.href}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => play("tap")}
-              onMouseEnter={() => play("nav")}
-              onFocus={() => play("nav")}
-              className="mt-auto pt-5 inline-flex items-center text-xs uppercase tracking-[0.14em] text-cyan-300"
-            >
-              View on GitHub
+            <a href={project.href} target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="mt-auto inline-flex items-center gap-1 pt-4 text-xs uppercase tracking-[0.12em] text-cyan-300/70 transition-colors hover:text-cyan-200">
+              {project.linkLabel} <span className="text-[10px]">→</span>
             </a>
-          </article>
+          </motion.article>
         ))}
       </div>
     </div>
@@ -443,200 +468,269 @@ function ProjectsScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle") => v
 }
 
 function ResumeScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle") => void }) {
+  const experience = [
+    { company: "Motive", role: "Software Engineer Intern · Building AI Infrastructure", period: "Nov 2025 – Present", desc: "Integrated Portkey as the AI gateway to route, cache, and monitor 10K+ LLM calls/month, reducing API costs by 35%. Built data pipelines ingesting 5,000+ event RSVPs and an AI evaluation engine auto-processing 1,000+ candidates per event, reducing manual review by 80%." },
+    { company: "Osinski Planetary Research Lab", role: "Software Engineer Intern · Western University", period: "Sept 2024 – Sept 2025", desc: "Launched an iOS field data collection app used by 120+ operators across remote geological sites with offline-first sync. Built role-based auth via Firebase securing data across 3 research teams for a $60K+ funded initiative." },
+    { company: "Fleex", role: "Software Engineer Intern", period: "May 2024 – Aug 2024", desc: "Delivered dashboard features, BTCPay integration, and hardened Auth0/Google OAuth flows." },
+  ];
+
   return (
-    <div>
-      <p className="duel-label">Resume</p>
-      <h2 className="mt-3 text-2xl text-yellow-100">Experience Summary</h2>
-      <div className="mt-4 space-y-3 text-xs text-slate-200">
-        <div className="deck-card">
-          <p className="text-cyan-300">Motive Rewards • Software Engineer Intern • Sept 2025 - Present</p>
-          <p className="mt-1">Built cross-platform React Native features and 20+ Node/Express APIs for event workflows.</p>
-        </div>
-        <div className="deck-card">
-          <p className="text-cyan-300">SpaceRocks • Software Engineer Intern • Sept 2024 - Sept 2025</p>
-          <p className="mt-1">Developed iOS SwiftUI features and improved offline sync reliability for field operations.</p>
-        </div>
-        <div className="deck-card">
-          <p className="text-cyan-300">Fleex • Software Engineer Intern • May 2024 - Aug 2024</p>
-          <p className="mt-1">Delivered dashboard features, BTCPay integration, and hardened Auth0/Google OAuth flows.</p>
-        </div>
+    <div className="section-content">
+      <ScrollReveal>
+        <p className="duel-label">Resume</p>
+        <h2 className="duel-heading mt-3 text-2xl text-yellow-100 md:text-3xl">Experience</h2>
+      </ScrollReveal>
+      <div className="mt-4 space-y-3">
+        {experience.map((exp, i) => (
+          <motion.div
+            key={exp.company}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+            className="deck-card deck-card-hover p-4"
+          >
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h3 className="text-sm font-semibold text-yellow-100">{exp.company}</h3>
+              <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500">{exp.period}</span>
+            </div>
+            <p className="mt-1 text-xs text-cyan-300/70">{exp.role}</p>
+            <p className="mt-2 text-xs leading-relaxed text-slate-300">{exp.desc}</p>
+          </motion.div>
+        ))}
       </div>
-      <a
-        href="/Zeeshan_Resume_2026.pdf"
-        download
-        onClick={() => play("tap")}
-        onMouseEnter={() => play("nav")}
-        onFocus={() => play("nav")}
-        className="duel-enter-btn mt-4 inline-flex"
-      >
-        Download Resume
-      </a>
+      <ScrollReveal delay={0.3}>
+        <a
+          href="/Zeeshan_Resume_2026.pdf"
+          download
+          onClick={() => play("tap")}
+          onMouseEnter={() => play("nav")}
+          className="duel-enter-btn mt-5 inline-flex"
+        >
+          Download Resume
+        </a>
+      </ScrollReveal>
     </div>
   );
 }
 
-function ContactScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle") => void }) {
+function useDuelistNotifications() {
+  const notifications: { text: string; icon: React.ReactNode }[] = [
+    { text: "Deployed AI OrderFlow", icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> },
+    { text: "Pushed to PolyMarketAgent", icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><line x1="3" x2="9" y1="12" y2="12"/><line x1="15" x2="21" y1="12" y2="12"/><path d="M12 3v6"/><path d="M12 15v6"/></svg> },
+    { text: "Plato reached 50+ users", icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg> },
+    { text: "Shipped Portkey at Motive", icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg> },
+    { text: "Built iOS app for Osinski Lab", icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> },
+    { text: "Automated 100+ orders/day", icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg> },
+  ];
+  const [active, setActive] = useState<{ text: string; icon: React.ReactNode; id: number } | null>(null);
+  const idRef = useRef(0);
+  useEffect(() => {
+    const show = () => {
+      const n = notifications[Math.floor(Math.random() * notifications.length)];
+      setActive({ ...n, id: ++idRef.current });
+      setTimeout(() => setActive(null), 3000);
+    };
+    const initial = setTimeout(show, 2000);
+    const interval = setInterval(show, 5000);
+    return () => { clearTimeout(initial); clearInterval(interval); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return active;
+}
+
+function ContactScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle" | "disk") => void }) {
+  const [entered, setEntered] = useState(false);
+  const [barsReady, setBarsReady] = useState(false);
+  const notification = useDuelistNotifications();
+
+  // Trigger entrance slam after mount
+  useEffect(() => {
+    const t = setTimeout(() => setEntered(true), 100);
+    const b = setTimeout(() => setBarsReady(true), 900);
+    return () => { clearTimeout(t); clearTimeout(b); };
+  }, []);
+
+  // Play slam sound on entrance
+  useEffect(() => {
+    if (entered) play("disk");
+  }, [entered, play]);
+
+  const actions = [
+    { label: "Email", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>, href: "mailto:ZeeshanNawazChaudhry@gmail.com" },
+    { label: "LinkedIn", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>, href: "https://linkedin.com/in/zeeshannchaudhry", external: true },
+    { label: "GitHub", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>, href: "https://github.com/Zeeshan-Chaudhry", external: true },
+    { label: "Resume", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>, href: "/Zeeshan_Resume_2026.pdf", download: true },
+  ];
+
+  const powerLevels = [
+    { label: "TypeScript", level: 92 },
+    { label: "React / RN", level: 90 },
+    { label: "Node / Nest", level: 88 },
+    { label: "Python", level: 85 },
+    { label: "AI / LLMs", level: 82 },
+  ];
+
   return (
-    <div className="flex min-h-[300px] items-center justify-center py-2 md:min-h-[360px]">
-      <div className="relative w-full max-w-3xl">
+    <div className="section-content relative">
+      {/* Rotating summoning circle behind everything */}
+      <div className="cd-summoning-circle" aria-hidden />
+
+      {/* Screen flash on card slam */}
+      <div className={`cd-slam-flash ${entered ? "cd-slam-flash-active" : ""}`} aria-hidden />
+
+      <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-start lg:gap-8">
+        {/* Left: Spinning Yu-Gi-Oh card */}
         <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-[12%] top-6 h-[80%] rounded-[2rem] bg-[radial-gradient(circle,rgba(59,130,246,0.18),transparent_68%)] blur-3xl"
-        />
-        <div className="relative overflow-hidden rounded-[1.4rem] border border-yellow-200/22 bg-[linear-gradient(180deg,rgba(151,116,56,0.95),rgba(116,85,36,0.96)_6%,rgba(17,31,56,0.98)_6.1%,rgba(7,16,30,0.99)_100%)] p-[4px] shadow-[0_26px_90px_rgba(2,8,23,0.7),0_0_24px_rgba(245,158,11,0.08)]">
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_20%,transparent_78%,rgba(255,255,255,0.03))]" aria-hidden />
-          <div className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(125,211,252,0.22)_1px,transparent_1px)] [background-size:100%_4px]" aria-hidden />
+          className={`cd-card-stage ${entered ? "cd-card-entered" : "cd-card-pre"}`}
+          style={{ perspective: 900 }}
+        >
+          {/* Glow behind card */}
+          <div className={`cd-card-glow ${entered ? "cd-glow-active" : ""}`} aria-hidden />
 
-          <div className="relative overflow-hidden rounded-[1.15rem] border border-white/6 bg-[radial-gradient(circle_at_top,rgba(18,56,109,0.24),transparent_30%),linear-gradient(180deg,rgba(8,17,33,0.98),rgba(6,14,27,0.99))]">
-            <div className="flex items-center justify-between bg-[linear-gradient(90deg,rgba(148,118,57,0.95),rgba(203,178,101,0.9),rgba(118,89,34,0.95))] px-4 py-3 text-[11px] uppercase tracking-[0.16em] text-slate-950 md:px-5">
-              <div className="flex items-center gap-3">
-                <span className="h-0 w-0 border-b-[8px] border-l-[7px] border-r-[7px] border-b-slate-100/90 border-l-transparent border-r-transparent" />
-                <span className="duel-matrix-font font-semibold">Contact // Duelist Dossier</span>
+          {/* Impact shockwave ring on slam */}
+          <div className={`cd-shockwave ${entered ? "cd-shockwave-active" : ""}`} aria-hidden />
+
+          <div className="cd-spin-card">
+            <div className="cd-spin-card-inner">
+              <div className="cd-spin-card-face cd-spin-card-front">
+                <Image src="/signature-card.png" alt="Zeeshan Chaudhry" fill sizes="220px" className="object-contain rounded-[8px]" />
               </div>
-              <span className="duel-matrix-font rounded-full border border-slate-900/20 bg-slate-950/10 px-2 py-1 text-[10px] tracking-[0.2em]">Comm Link</span>
-            </div>
-
-            <div className="px-4 pb-4 pt-3 md:px-5 md:pb-5">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <h2 className="duel-matrix-font text-2xl text-yellow-100 md:text-[2rem]">Zeeshan Chaudhry // Software Engineer</h2>
-                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-300">
-                    Full-stack product builder focused on practical software, startup systems, and engineering work that survives real constraints.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  {["01", "02", "03", "04", "05", "06", "07"].map((star) => (
-                    <span
-                      key={star}
-                      className="flex h-6 w-6 items-center justify-center rounded-full border border-yellow-200/20 bg-[radial-gradient(circle,rgba(251,191,36,0.95),rgba(180,83,9,0.98))] text-[9px] font-semibold text-slate-950 shadow-[0_0_10px_rgba(245,158,11,0.16)]"
-                    >
-                      {star}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4 grid gap-4 md:grid-cols-[1.15fr_0.85fr]">
-                <div className="rounded-[1.1rem] border border-slate-300/18 bg-[linear-gradient(180deg,rgba(38,43,52,0.96),rgba(11,15,21,0.98))] p-[10px] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-                  <div className="relative overflow-hidden rounded-[0.95rem] border border-cyan-300/14 bg-[radial-gradient(circle_at_50%_40%,rgba(168,85,247,0.25),transparent_28%),radial-gradient(circle_at_50%_50%,rgba(34,211,238,0.16),transparent_52%),linear-gradient(180deg,rgba(15,22,37,0.96),rgba(3,7,18,0.99))] p-5">
-                    <div
-                      aria-hidden
-                      className="absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_center,transparent_34%,rgba(168,85,247,0.4)_35%,transparent_43%)]"
-                    />
-                    <div
-                      aria-hidden
-                      className="absolute inset-x-6 top-6 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.45),transparent)]"
-                    />
-                    <div className="relative flex min-h-[250px] items-center justify-center">
-                      <div className="duelist-card-flip mx-auto aspect-[0.7] w-full max-w-[260px]">
-                        <div className="duelist-card-flip-inner">
-                          <div className="duelist-card-face duelist-card-front">
-                            <Image
-                              src="/signature-card.png"
-                              alt="Zeeshan duelist signature card"
-                              fill
-                              sizes="(max-width: 768px) 70vw, 260px"
-                              className="object-contain"
-                            />
-                            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,10,20,0.08),transparent_30%,transparent_70%,rgba(4,10,20,0.28))]" aria-hidden />
-                          </div>
-                          <div className="duelist-card-face duelist-card-back" aria-hidden>
-                            <div className="duelist-card-back-frame">
-                              <div className="duelist-card-back-surface" />
-                              <div className="duelist-card-back-core" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-4">
-                  <div className="rounded-[1.1rem] border border-cyan-300/14 bg-[linear-gradient(180deg,rgba(12,28,54,0.96),rgba(8,18,33,0.98))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-                    <div className="flex items-center justify-between border-b border-cyan-300/12 pb-3">
-                      <span className="text-[11px] uppercase tracking-[0.18em] text-cyan-200/76">Attribute</span>
-                      <span className="duel-matrix-font rounded-full border border-cyan-300/14 bg-cyan-400/8 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-cyan-100">
-                        Builder / Light
-                      </span>
-                    </div>
-
-                    <div className="mt-4 space-y-3">
-                      {[
-                        ["School", "Western University"],
-                        ["Focus", "Full-Stack Product Engineering"],
-                        ["Status", "Open to internships and technical opportunities"],
-                        ["Location", "Ontario, Canada"],
-                        ["ID No.", "03315"],
-                      ].map(([label, value]) => (
-                        <div key={label} className="grid grid-cols-[74px_1fr] gap-3 text-sm">
-                          <span className="text-[11px] uppercase tracking-[0.18em] text-cyan-200/72">{label}</span>
-                          <span className="text-slate-100">{value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="rounded-[1.05rem] border border-yellow-200/18 bg-[linear-gradient(180deg,rgba(26,20,10,0.94),rgba(12,11,16,0.98))] px-4 py-4">
-                    <p className="duel-matrix-font text-[11px] uppercase tracking-[0.18em] text-yellow-100/76">Dossier Text</p>
-                    <p className="mt-3 text-sm leading-relaxed text-slate-200">
-                      Engineering profile centered on product execution, shipped workflows, and technical systems with real operational value.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 rounded-[1.05rem] border border-yellow-200/18 bg-[linear-gradient(180deg,rgba(26,20,10,0.94),rgba(12,11,16,0.98))] p-3">
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                  <a
-                    href="mailto:ZeeshanNawazChaudhry@gmail.com"
-                    onClick={() => play("tap")}
-                    onMouseEnter={() => play("nav")}
-                    onFocus={() => play("nav")}
-                    className="group rounded-xl border border-cyan-300/14 bg-[linear-gradient(180deg,rgba(10,24,46,0.95),rgba(8,18,34,0.98))] px-4 py-4 text-left transition hover:-translate-y-0.5 hover:border-yellow-200/32 hover:shadow-[0_0_20px_rgba(245,158,11,0.08)]"
-                  >
-                    <span className="duel-matrix-font block text-[11px] uppercase tracking-[0.2em] text-cyan-200/72 transition group-hover:text-yellow-100">Email</span>
-                    <span className="mt-1 block text-sm text-slate-100">Direct</span>
-                  </a>
-                  <a
-                    href="https://linkedin.com/in/zeeshannchaudhry"
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => play("tap")}
-                    onMouseEnter={() => play("nav")}
-                    onFocus={() => play("nav")}
-                    className="group rounded-xl border border-cyan-300/14 bg-[linear-gradient(180deg,rgba(10,24,46,0.95),rgba(8,18,34,0.98))] px-4 py-4 text-left transition hover:-translate-y-0.5 hover:border-yellow-200/32 hover:shadow-[0_0_20px_rgba(245,158,11,0.08)]"
-                  >
-                    <span className="duel-matrix-font block text-[11px] uppercase tracking-[0.2em] text-cyan-200/72 transition group-hover:text-yellow-100">LinkedIn</span>
-                    <span className="mt-1 block text-sm text-slate-100">Profile</span>
-                  </a>
-                  <a
-                    href="https://github.com/Zeeshan-Chaudhry"
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => play("tap")}
-                    onMouseEnter={() => play("nav")}
-                    onFocus={() => play("nav")}
-                    className="group rounded-xl border border-cyan-300/14 bg-[linear-gradient(180deg,rgba(10,24,46,0.95),rgba(8,18,34,0.98))] px-4 py-4 text-left transition hover:-translate-y-0.5 hover:border-yellow-200/32 hover:shadow-[0_0_20px_rgba(245,158,11,0.08)]"
-                  >
-                    <span className="duel-matrix-font block text-[11px] uppercase tracking-[0.2em] text-cyan-200/72 transition group-hover:text-yellow-100">GitHub</span>
-                    <span className="mt-1 block text-sm text-slate-100">Code</span>
-                  </a>
-                  <a
-                    href="/Zeeshan_Resume_2026.pdf"
-                    download
-                    onClick={() => play("tap")}
-                    onMouseEnter={() => play("nav")}
-                    onFocus={() => play("nav")}
-                    className="group rounded-xl border border-cyan-300/14 bg-[linear-gradient(180deg,rgba(10,24,46,0.95),rgba(8,18,34,0.98))] px-4 py-4 text-left transition hover:-translate-y-0.5 hover:border-yellow-200/32 hover:shadow-[0_0_20px_rgba(245,158,11,0.08)]"
-                  >
-                    <span className="duel-matrix-font block text-[11px] uppercase tracking-[0.2em] text-cyan-200/72 transition group-hover:text-yellow-100">Resume</span>
-                    <span className="mt-1 block text-sm text-slate-100">PDF</span>
-                  </a>
-                </div>
+              <div className="cd-spin-card-face cd-spin-card-back">
+                <Image src="/Yugioh_Card_Back.jpg" alt="Card back" fill sizes="220px" className="object-cover rounded-[8px]" />
               </div>
             </div>
           </div>
+
+          {/* Floating particles around card */}
+          <div className="cd-floating-particles" aria-hidden>
+            <span /><span /><span /><span /><span /><span />
+            <span /><span /><span /><span /><span /><span />
+          </div>
+        </div>
+
+        {/* Right: Info + actions with pulsing bracket border */}
+        <div className="cd-right-panel flex flex-1 flex-col min-w-0">
+          {/* Animated corner brackets */}
+          <div className="cd-brackets" aria-hidden>
+            <span className="cd-bracket cd-bracket-tl" />
+            <span className="cd-bracket cd-bracket-tr" />
+            <span className="cd-bracket cd-bracket-bl" />
+            <span className="cd-bracket cd-bracket-br" />
+          </div>
+
+          {/* Live notification toast */}
+          <div className="relative h-8 mb-3">
+            <AnimatePresence mode="wait">
+              {notification && (
+                <motion.div
+                  key={notification.id}
+                  initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                  className="cd-live-toast"
+                >
+                  <span className="cd-live-dot" />
+                  <span className="cd-live-icon">{notification.icon}</span>
+                  <span className="cd-live-text">{notification.text}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Duelist info with staggered entrance */}
+          <motion.div
+            initial={{ opacity: 0, x: 30, filter: "blur(8px)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="cd-section-label text-cyan-200/40">Duelist Profile</p>
+            <h2 className="cd-profile-name mt-1">Zeeshan Chaudhry</h2>
+            <p className="mt-1 text-xs text-slate-400">Software Engineer · Computer Science · Western University</p>
+          </motion.div>
+
+          {/* Quick stats row */}
+          <motion.div
+            initial={{ opacity: 0, x: 30, filter: "blur(8px)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.6, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-3 flex flex-wrap gap-2"
+          >
+            {[
+              { label: "Region", value: "Toronto, CA" },
+              { label: "Guild", value: "Motive" },
+              { label: "Status", value: "Open to Work" },
+            ].map((s) => (
+              <div key={s.label} className="cd-info-chip">
+                <span className="cd-info-chip-label">{s.label}</span>
+                <span className="cd-info-chip-value">{s.value}</span>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Power levels with sequential energy fill */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.65 }}
+            className="mt-4"
+          >
+            <p className="cd-section-label text-cyan-200/30 mb-2">Power Levels</p>
+            <div className="space-y-1.5">
+              {powerLevels.map((s, i) => (
+                <div key={s.label} className="cd-power-row">
+                  <span className="cd-power-label">{s.label}</span>
+                  <div className="cd-power-track">
+                    <motion.div
+                      className="cd-power-fill"
+                      initial={{ width: 0 }}
+                      animate={barsReady ? { width: `${s.level}%` } : { width: 0 }}
+                      transition={{ duration: 1.2, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <span className="cd-power-spark" />
+                    </motion.div>
+                  </div>
+                  <motion.span
+                    className="cd-power-val"
+                    initial={{ opacity: 0 }}
+                    animate={barsReady ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ duration: 0.3, delay: i * 0.15 + 0.8 }}
+                  >{s.level}</motion.span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Challenge actions with summoning circle hover */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            className="mt-4"
+          >
+            <p className="cd-section-label text-yellow-200/40 mb-2">Challenge This Duelist</p>
+            <div className="flex gap-2">
+              {actions.map((a, i) => (
+                <motion.a
+                  key={a.label}
+                  href={a.href}
+                  target={a.external ? "_blank" : undefined}
+                  rel={a.external ? "noreferrer" : undefined}
+                  download={a.download || undefined}
+                  onClick={() => play("tap")}
+                  onMouseEnter={() => play("nav")}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.9 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  className="cd-action group"
+                >
+                  <span className="cd-action-circle" aria-hidden />
+                  <span className="cd-action-icon">{a.icon}</span>
+                  <p className="cd-action-label">{a.label}</p>
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
