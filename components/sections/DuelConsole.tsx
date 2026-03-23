@@ -267,51 +267,51 @@ function InfoScreen() {
 
   return (
     <div className="section-content">
-      <div className="grid gap-6 md:grid-cols-[1fr_300px]">
-        {/* Left: Bio + Timeline + Skills */}
+      <div className="grid gap-4 md:grid-cols-[1fr_260px]">
+        {/* Left: Bio + Skills + Stats */}
         <div>
           <ScrollReveal>
             <p className="duel-label">About</p>
-            <h2 className="duel-heading mt-3 text-3xl text-yellow-100 md:text-4xl">Zeeshan Chaudhry</h2>
-            <p className="mt-3 max-w-2xl text-sm text-cyan-200 md:text-base">
+            <h2 className="duel-heading mt-2 text-2xl text-yellow-100 md:text-3xl">Zeeshan Chaudhry</h2>
+            <p className="mt-2 max-w-2xl text-sm text-cyan-200">
               Full-stack product engineer building practical software, startup tools, and systems that move from idea to real-world use.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <p className="mt-4 max-w-2xl text-xs leading-relaxed text-slate-300 md:text-sm">
-              I&apos;ve been playing video games since I was 4. That&apos;s what got me into Yu-Gi-Oh, and I spent years collecting cards, playing competitively, and grinding ranked duels online. It was a huge part of growing up for me, so it felt right to theme my portfolio around it. I started messing around with Scratch when I was 9, built my first actual game in Java at 11, and from there I just kept building. Now I&apos;m studying Computer Science at Western, working as a software engineer intern, and shipping real products. I&apos;ve built things like AI-powered order systems for e-commerce businesses and research tools used out in the field at geological sites. At the end of the day, I want to build things that can change the world, not just look good in a demo.
+            <p className="mt-2 max-w-2xl text-xs leading-relaxed text-slate-300">
+              Been coding since I was 9, started with Scratch, built my first game in Java at 11, and never stopped. Now I&apos;m studying CS at Western, interning as a software engineer, and shipping real products — from AI-powered order systems to field research tools used at geological sites. I want to build things that change the world, not just look good in a demo. Yu-Gi-Oh shaped my childhood, so it felt right to theme my portfolio around it.
             </p>
           </ScrollReveal>
 
-          {/* Skill Bars */}
-          <ScrollReveal delay={0.2}>
-            <div className="mt-5">
-              <p className="text-[10px] uppercase tracking-[0.16em] text-cyan-200/50 mb-3">Power Levels</p>
+          {/* Skills + Stats side by side */}
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            <ScrollReveal delay={0.2}>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-cyan-200/50 mb-2">Power Levels</p>
               <div className="skill-bars">
                 {skills.map((s, i) => (
                   <SkillBar key={s.label} label={s.label} level={s.level} delay={i * 0.06} />
                 ))}
               </div>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
 
-          {/* Stats */}
-          <ScrollReveal delay={0.3}>
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {[
-                { label: "School", value: "Western University" },
-                { label: "Program", value: "Computer Science" },
-                { label: "Location", value: "Toronto, Canada" },
-                { label: "Status", value: "Open to Work" },
-              ].map((stat) => (
-                <div key={stat.label} className="deck-card deck-card-hover p-3">
-                  <p className="text-[10px] uppercase tracking-[0.14em] text-cyan-200/50">{stat.label}</p>
-                  <p className="mt-1 text-xs font-medium text-slate-200">{stat.value}</p>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
+            <ScrollReveal delay={0.3}>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-cyan-200/50 mb-2">Stats</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: "School", value: "Western University" },
+                  { label: "Program", value: "Computer Science" },
+                  { label: "Location", value: "Toronto, Canada" },
+                  { label: "Status", value: "Open to Work" },
+                ].map((stat) => (
+                  <div key={stat.label} className="deck-card deck-card-hover p-2">
+                    <p className="text-[10px] uppercase tracking-[0.14em] text-cyan-200/50">{stat.label}</p>
+                    <p className="mt-0.5 text-xs font-medium text-slate-200">{stat.value}</p>
+                  </div>
+                ))}
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
 
         {/* Right: Blue-Eyes White Dragon */}
