@@ -444,20 +444,17 @@ function ProjectsScreen({ play }: { play: (kind?: "tap" | "nav" | "toggle") => v
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="deck-card deck-card-hover flex min-h-[240px] min-w-[85%] snap-start flex-col p-4 sm:min-w-[68%] lg:min-w-[31%]"
+            className="deck-card deck-card-hover flex min-w-[85%] snap-start flex-col p-4 sm:min-w-[68%] lg:min-w-[31%]"
           >
             <p className="text-[10px] uppercase tracking-[0.16em] text-cyan-300/80">{project.label}</p>
             <h3 className="mt-2 text-base font-semibold text-yellow-100">{project.title}</h3>
-            <p className="mt-2 text-xs leading-relaxed text-slate-300">{project.description}</p>
-            <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
-              <span className="text-cyan-200/80">Why it matters:</span> {project.why}
-            </p>
+            <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-slate-300">{project.description}</p>
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {project.stack.map((item) => (
+              {project.stack.slice(0, 4).map((item) => (
                 <span key={`${project.title}-${item}`} className="tech-chip">{item}</span>
               ))}
             </div>
-            <a href={project.href} target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="mt-auto inline-flex items-center gap-1 pt-4 text-xs uppercase tracking-[0.12em] text-cyan-300/70 transition-colors hover:text-cyan-200">
+            <a href={project.href} target="_blank" rel="noreferrer" onClick={() => play("tap")} onMouseEnter={() => play("nav")} className="mt-auto inline-flex items-center gap-1 pt-3 text-xs uppercase tracking-[0.12em] text-cyan-300/70 transition-colors hover:text-cyan-200">
               {project.linkLabel} <span className="text-[10px]">→</span>
             </a>
           </motion.article>
