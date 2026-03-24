@@ -17,10 +17,11 @@ const tabs: { key: TabKey; label: string }[] = [
 export default function DuelConsole() {
   const [booted, setBooted] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("info");
-  const { play } = useSfx();
+  const { play, enabled, setEnabled } = useSfx();
 
   const startDuel = () => {
-    play("toggle");
+    if (!enabled) setEnabled(true);
+    play("toggle", true);
     setBooted(true);
   };
 

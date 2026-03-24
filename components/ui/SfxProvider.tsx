@@ -7,7 +7,7 @@ type SfxKind = "tap" | "nav" | "toggle" | "disk";
 interface SfxContextValue {
   enabled: boolean;
   setEnabled: (next: boolean) => void;
-  play: (kind?: SfxKind) => void;
+  play: (kind?: SfxKind, force?: boolean) => void;
 }
 
 const STORAGE_KEY = "duel_sfx_enabled";
@@ -82,8 +82,8 @@ export function SfxProvider({ children }: { children: ReactNode }) {
   );
 
   const play = useCallback(
-    (kind: SfxKind = "tap") => {
-      if (!enabled) return;
+    (kind: SfxKind = "tap", force = false) => {
+      if (!enabled && !force) return;
 
       if (kind === "disk") {
         const tapTemplate = tapAudioRef.current;
