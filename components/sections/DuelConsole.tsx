@@ -159,7 +159,6 @@ export default function DuelConsole() {
                       key={tab.key}
                       type="button"
                       onClick={() => { play("disk"); setActiveTab(tab.key); }}
-                      onMouseEnter={() => play("disk")}
                       className={`dd-zone ${activeTab === tab.key ? "dd-zone-active" : ""}`}
                       aria-current={activeTab === tab.key ? "page" : undefined}
                     >
@@ -198,7 +197,6 @@ export default function DuelConsole() {
                       key={tab.key}
                       type="button"
                       onClick={() => { play("disk"); setActiveTab(tab.key); }}
-                      onMouseEnter={() => play("disk")}
                       className={`dd-zone ${activeTab === tab.key ? "dd-zone-active" : ""}`}
                       aria-current={activeTab === tab.key ? "page" : undefined}
                     >
